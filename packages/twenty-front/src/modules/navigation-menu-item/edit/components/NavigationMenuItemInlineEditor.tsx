@@ -150,6 +150,9 @@ export const NavigationMenuItemInlineEditor = ({
         autoFocus
         selectOnFocus
         copyButton={false}
+        // Trimming on every keystroke would eat the spaces while the name is
+        // being typed; the value is trimmed once when the rename is committed.
+        shouldTrim={false}
         value={name}
         onChange={setName}
         onEnter={finishRename}

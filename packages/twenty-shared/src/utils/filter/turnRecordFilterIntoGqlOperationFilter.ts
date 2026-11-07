@@ -681,12 +681,23 @@ const buildDirectFieldGqlOperationFilter = ({
             } as FloatFilter,
           };
         case RecordFilterOperand.IS_NOT:
+          // NOT (employees = 50) is unknown for NULL rows, so match them
+          // explicitly to keep records without a value in the results.
           return {
-            not: {
-              [fieldMetadataItem.name]: {
-                eq: parseNumericFilterValue(recordFilter.value),
-              } as FloatFilter,
-            },
+            or: [
+              {
+                not: {
+                  [fieldMetadataItem.name]: {
+                    eq: parseNumericFilterValue(recordFilter.value),
+                  } as FloatFilter,
+                },
+              },
+              {
+                [fieldMetadataItem.name]: {
+                  is: 'NULL',
+                } as FloatFilter,
+              },
+            ],
           };
         default:
           throw new Error(
